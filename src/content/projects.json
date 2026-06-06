@@ -1,0 +1,16 @@
+[
+  {
+    "id": "garden-scaffold",
+    "tier": "featured",
+    "name": "Garden Scaffold",
+    "zombieExeName": "GardenScaffold.exe",
+    "plantStyle": "fern",
+    "world": { "x": 600, "y": 400 },
+    "problem": "The portfolio app needs a validated content pipeline before final art and projects ship.",
+    "solution": "This placeholder row satisfies projectsSchema so dev startup parse stays green until you replace it.",
+    "tech": ["React", "TypeScript", "Vite"],
+    "keyFeatures": ["Zod-validated JSON", "TRD-aligned folders"],
+    "status": "active",
+    "links": {}
+  }
+]
