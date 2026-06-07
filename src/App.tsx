@@ -37,7 +37,7 @@ export default function App() {
   }
 
   return (
-    <div id="app-shell" className="flex min-h-dvh flex-col pb-[5.5rem] pt-[5.25rem] md:pb-0 md:pt-[5.5rem]">
+    <div id="app-shell" className="relative min-h-dvh w-full max-w-[100vw] bg-ui-bg">
       <div className="zombie-fx-vignette" aria-hidden />
       <div className="zombie-fx-scanlines" aria-hidden />
       <div className="zombie-fx-glitch" aria-hidden />
@@ -64,10 +64,23 @@ export default function App() {
         Skip to recruiter overview
       </a>
 
-      <main id="main" className="flex min-h-0 flex-1 flex-col gap-3 p-4 md:gap-4 md:p-6">
+      <main
+        id="main"
+        className="box-border flex w-full min-w-0 flex-col bg-sky md:pt-[5.5rem] md:[background-clip:content-box]"
+      >
         <GardenCanvas />
 
-        <div className="flex shrink-0 flex-col items-center gap-3 text-center md:flex-row md:flex-wrap md:justify-center md:gap-4">
+        <div
+          id="site-footer"
+          className="flex w-full min-w-0 flex-col items-center gap-3 border-t border-ui-text/15 bg-sky p-4 pt-6 text-center md:flex-row md:flex-wrap md:justify-center md:gap-4 md:p-8 md:pt-8"
+        >
+          <p className="font-body max-w-2xl px-1 text-[10px] text-ui-text/75 md:text-xs">
+            Hold <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">W</kbd> to water — tap a plant, drag from soil onto a plant, or use{" "}
+            <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">←</kbd>{" "}
+            <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">→</kbd> +{" "}
+            <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">Enter</kbd>. Tap without{" "}
+            <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">W</kbd> opens the project.
+          </p>
           <h1 className="font-pixel text-[9px] leading-relaxed sm:text-xs">The Pixel Garden</h1>
           <p className="font-body max-w-md text-xs text-ui-text/85 md:text-sm">
             Phase 7–13: cottage, terminal, contact, recruiter + resume, day/night/zombie, ambient + optional curated hub sprites, ship checklist. Plausible:{" "}

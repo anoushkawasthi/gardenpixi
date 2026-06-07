@@ -1,12 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LANDING_DIALOGUE, LANDING_TYPEWRITER_MS } from "../../content/landingCopy";
 import { useGardenStore } from "../../store/useGardenStore";
+import { LandingAvatarSection } from "./LandingAvatars";
 
 type LandingUiPhase = "fonts" | "typing" | "complete";
+
+const LANDING_BG_DEFAULT = "/asset/stitch_anoushka_s_digital_garden/screen.png";
+/** Folder name includes space + parentheses — encode for URL. */
+const LANDING_BG_ALT = "/asset/stitch_anoushka_s_digital_garden%20(1)/screen.png";
+
+type BgVariant = "default" | "alt";
 
 export function Landing() {
   const enterGarden = useGardenStore((s) => s.enterGarden);
   const rootRef = useRef<HTMLElement>(null);
+
+  const [bgVariant, setBgVariant] = useState<BgVariant>("default");
 
   const [uiPhase, setUiPhase] = useState<LandingUiPhase>("fonts");
   const [visibleLen, setVisibleLen] = useState(0);
@@ -89,6 +98,10 @@ export function Landing() {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== " " && e.key !== "Enter") return;
       const t = e.target;
+      if (t instanceof Node) {
+        const el = t instanceof Element ? t : (t.parentElement as Element | null);
+        if (el?.closest("[data-landing-ui]")) return;
+      }
       if (t instanceof HTMLButtonElement || t instanceof HTMLAnchorElement) return;
       e.preventDefault();
       trySkip();
@@ -99,35 +112,80 @@ export function Landing() {
 
   const displayed = LANDING_DIALOGUE.slice(0, visibleLen);
 
+  const bgSrc = bgVariant === "default" ? LANDING_BG_DEFAULT : LANDING_BG_ALT;
+
   return (
     <main
       id="main"
       ref={rootRef}
-      className="relative flex min-h-dvh flex-col bg-sky outline-none"
+      className="relative flex min-h-dvh flex-col overflow-hidden bg-sky outline-none"
       tabIndex={0}
       aria-label="Welcome — press Space or Enter to skip the typewriter"
       onPointerDown={(e) => {
         if (e.button !== 0) return;
+        if ((e.target as HTMLElement).closest?.("[data-landing-ui]")) return;
         trySkip();
       }}
     >
-      {/* Scene placeholder — PRD §9.1 exterior; TRD gate anim later */}
-      <div className="pointer-events-none flex flex-1 flex-col items-center justify-center gap-6 px-4 pt-8">
-        <div
-          className="font-pixel flex h-28 w-24 flex-col items-center justify-end rounded border-4 border-ui-text/40 bg-ui-bg/30 text-[6px] text-ui-text/80 shadow-md sm:h-32 sm:w-28 sm:text-[7px]"
+      <div className="pointer-events-none absolute inset-0 z-0" aria-hidden>
+        <img
+          key={bgSrc}
+          src={bgSrc}
+          alt=""
+          width={1024}
+          height={576}
+          decoding="async"
+          fetchPriority="high"
+          className="h-full w-full object-cover object-center"
+        />
+      </div>
+      {/* Readability over the lower third of the art (dialogue + CTA). */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(52dvh,420px)] bg-gradient-to-t from-black/40 via-black/15 to-transparent"
+        aria-hidden
+      />
+
+      <h1
+        aria-label="The Pixel Garden"
+        className="pointer-events-none absolute left-0 right-0 top-0 z-[3] flex justify-center px-4 pt-[max(0.5rem,env(safe-area-inset-top))]"
+      >
+        <svg
+          className="h-auto w-[min(96vw,52rem)] text-ui-text drop-shadow-[0_2px_0_rgba(0,0,0,0.28)]"
+          viewBox="0 0 1600 160"
+          preserveAspectRatio="xMidYMid meet"
+          overflow="visible"
           aria-hidden
         >
-          <span className="mb-1 px-1 text-center leading-tight">Gate</span>
-          <div className="mb-2 h-10 w-14 rounded-sm border-2 border-dashed border-ui-text/35 bg-ground/40 sm:h-12 sm:w-16" />
-          <span className="mb-2 text-[5px] opacity-70">6 frames →</span>
-        </div>
-        <p className="font-pixel pointer-events-none max-w-sm text-center text-[6px] leading-relaxed text-ui-text/75 sm:text-[7px]">
-          Path · fence · avatar placeholder
-        </p>
-      </div>
+          <defs>
+            <path
+              id="landing-curved-title-path"
+              d="M 40 118 Q 800 28 1560 118"
+              fill="none"
+            />
+          </defs>
+          <text
+            className="fill-current font-pixel"
+            style={{ fontSize: 50, letterSpacing: "0.06em" }}
+            dominantBaseline="middle"
+          >
+            <textPath href="#landing-curved-title-path" startOffset="50%" textAnchor="middle">
+              THE PIXEL GARDEN
+            </textPath>
+          </text>
+        </svg>
+      </h1>
 
-      {/* RPG dialogue — PRD §9.1 */}
-      <div className="relative z-10 p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="relative z-[2] min-h-0 flex-1" aria-hidden />
+
+      <div
+        className="relative z-[2] p-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+        data-landing-ui
+      >
+        <LandingAvatarSection
+          bgVariant={bgVariant}
+          onToggleBg={() => setBgVariant((v) => (v === "default" ? "alt" : "default"))}
+        />
+
         <div
           className="font-pixel mx-auto max-w-2xl border-4 border-ui-text/35 bg-ui-bg/95 p-4 text-[8px] leading-relaxed text-ui-text shadow-[4px_4px_0_rgba(0,0,0,0.12)] sm:text-[9px] sm:leading-relaxed"
           role="dialog"

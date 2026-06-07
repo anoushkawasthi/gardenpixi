@@ -22,6 +22,7 @@ import type {
   CameraState,
   CottageUiPhase,
   EnvironmentMode,
+  LandingAvatarId,
   ModalId,
   SitePhase,
 } from "../types";
@@ -165,6 +166,10 @@ export type GardenStore = {
   cottageInteriorActive: boolean;
   cottageUiPhase: CottageUiPhase;
 
+  /** Landing hero — Craftpix character shown above dialogue. */
+  landingAvatarId: LandingAvatarId;
+  setLandingAvatarId: (id: LandingAvatarId) => void;
+
   enterGarden: () => void;
 
   setEnvironmentMode: (mode: EnvironmentMode) => void;
@@ -219,6 +224,9 @@ export const useGardenStore = create<GardenStore>((set, get) => ({
   waterHighlightProjectId: projectsList[0]?.id ?? null,
   cottageInteriorActive: false,
   cottageUiPhase: "off",
+  landingAvatarId: "swordsman",
+
+  setLandingAvatarId: (landingAvatarId) => set({ landingAvatarId }),
 
   enterGarden: () => {
     get().closeModal();

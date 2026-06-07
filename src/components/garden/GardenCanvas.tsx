@@ -260,19 +260,12 @@ export function GardenCanvas() {
   }, [pixiReady, gardenSnap, plants, cottageHotspots]);
 
   return (
-    <div className="relative mx-auto w-full max-w-5xl shrink-0">
+    <div className="relative min-h-dvh w-full min-w-0 bg-sky md:min-h-[calc(100dvh-5.5rem)]">
       <div
         ref={hostRef}
-        className="relative aspect-[1200/700] max-h-[min(58dvh,520px)] min-h-[200px] w-full touch-pan-y overflow-hidden rounded-xl border-2 border-ui-text/20 bg-ui-bg/50 shadow-inner ring-1 ring-ui-text/10 md:max-h-[min(62dvh,580px)]"
+        className="relative min-h-dvh w-full min-w-0 touch-pan-y overflow-hidden bg-ground md:min-h-[calc(100dvh-5.5rem)]"
         data-component="garden-canvas-host"
       />
-      <p className="font-body mt-2 px-1 text-center text-[10px] text-ui-text/70 md:text-xs">
-        Hold <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">W</kbd> to water — tap a plant, drag from soil onto a plant, or use{" "}
-        <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">←</kbd>{" "}
-        <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">→</kbd> +{" "}
-        <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">Enter</kbd>. Tap without{" "}
-        <kbd className="rounded border border-ui-text/30 bg-ui-bg px-1 font-mono">W</kbd> opens the project.
-      </p>
       <div
         className="pointer-events-none absolute left-1/2 top-[min(18%,5.5rem)] z-10 max-w-[90%] -translate-x-1/2"
         aria-live="polite"

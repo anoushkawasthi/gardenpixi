@@ -22,6 +22,9 @@ export type CottageUiPhase = "off" | "door_exterior" | "interior";
 
 export type EnvironmentMode = "day" | "night" | "zombie";
 
+/** Landing page hero (Craftpix avatars under `public/avatar/`). */
+export type LandingAvatarId = "swordsman" | "archer" | "wizard";
+
 export type CameraState = {
   cx: number;
   cy: number;
