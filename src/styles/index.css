@@ -1,32 +1,5 @@
+@import "./tokens.css";
 @import "tailwindcss";
-
-/*
-  PRD §5.3 design tokens via data-theme (TRD §2.2 contract).
-  Applied on #app-shell in App.tsx.
-*/
-[data-theme="day"] {
-  --token-sky: #87ceeb;
-  --token-ground: #5dbb63;
-  --token-accent: #ffd700;
-  --token-ui-bg: #fff8e7;
-  --token-ui-text: #2c1810;
-}
-
-[data-theme="night"] {
-  --token-sky: #0d1b2a;
-  --token-ground: #2d5016;
-  --token-accent: #ffec8b;
-  --token-ui-bg: #1c1408;
-  --token-ui-text: #e8d5b0;
-}
-
-[data-theme="zombie"] {
-  --token-sky: #1a1a1a;
-  --token-ground: #3b2f2f;
-  --token-accent: #ff2222;
-  --token-ui-bg: #0a0a0a;
-  --token-ui-text: #00ff41;
-}
 
 @theme {
   --font-pixel: "Press Start 2P", system-ui, sans-serif;
@@ -41,11 +14,11 @@
 }
 
 @layer base {
-  body {
-    @apply m-0 min-h-dvh bg-sky font-body antialiased text-ui-text;
+  html {
+    @apply bg-sky text-ui-text;
   }
 
-  #root {
-    @apply min-h-dvh;
+  body {
+    @apply m-0 min-h-dvh font-body antialiased;
   }
 }

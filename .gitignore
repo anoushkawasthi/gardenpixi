@@ -6,6 +6,8 @@ pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+.docs/
+
 # Dependencies
 node_modules
 
@@ -13,6 +15,11 @@ node_modules
 dist
 dist-ssr
 *.local
+
+# Next.js
+.next
+out
+next-env.d.ts
 
 # Editor
 .vscode/*
@@ -27,6 +34,3 @@ dist-ssr
 
 # TypeScript
 *.tsbuildinfo
-
-# Vite
-.vite

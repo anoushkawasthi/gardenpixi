@@ -1,0 +1,160 @@
+/*
+  PRD §5.3 — design tokens. Scope: document root `data-theme` (TRD §2.2: day | night | zombie).
+  Toggle `<html data-theme="…">` in DevTools to verify variables without React.
+*/
+
+[data-theme="day"] {
+  --token-sky: #87ceeb;
+  --token-ground: #5dbb63;
+  --token-accent: #ffd700;
+  --token-ui-bg: #fff8e7;
+  --token-ui-text: #2c1810;
+}
+
+[data-theme="night"] {
+  --token-sky: #0d1b2a;
+  --token-ground: #2d5016;
+  --token-accent: #ffec8b;
+  --token-ui-bg: #1c1408;
+  --token-ui-text: #e8d5b0;
+}
+
+[data-theme="zombie"] {
+  --token-sky: #1a1a1a;
+  --token-ground: #3b2f2f;
+  --token-accent: #ff2222;
+  --token-ui-bg: #0a0a0a;
+  --token-ui-text: #00ff41;
+}
+
+/* PRD §8 / TRD §2.3 — mode crossfade on the shell (respect reduced motion) */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    transition:
+      background-color 0.65s ease,
+      color 0.65s ease;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    transition-duration: 0ms;
+  }
+}
+
+/* Phase 11 — zombie full-view overlays (below HUD z-40; pointer-events none). */
+.zombie-fx-vignette,
+.zombie-fx-scanlines,
+.zombie-fx-glitch {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 36;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.zombie-fx-vignette {
+  background: radial-gradient(
+    ellipse 72% 58% at 50% 42%,
+    transparent 28%,
+    rgba(0, 0, 0, 0.62) 100%
+  );
+}
+
+.zombie-fx-scanlines {
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.14) 2px,
+    rgba(0, 0, 0, 0.14) 3px
+  );
+  mix-blend-mode: multiply;
+}
+
+.zombie-fx-glitch {
+  background: linear-gradient(
+    95deg,
+    rgba(255, 0, 0, 0.04) 0%,
+    transparent 42%,
+    rgba(0, 255, 80, 0.05) 100%
+  );
+  mix-blend-mode: screen;
+}
+
+html[data-theme="zombie"] .zombie-fx-vignette {
+  opacity: 1;
+}
+
+html[data-theme="zombie"] .zombie-fx-scanlines {
+  opacity: 0.38;
+}
+
+html[data-theme="zombie"] .zombie-fx-glitch {
+  opacity: 1;
+}
+
+@keyframes zombie-scanline-drift {
+  0%,
+  100% {
+    opacity: 0.32;
+  }
+  50% {
+    opacity: 0.48;
+  }
+}
+
+@keyframes zombie-glitch-nudge {
+  0%,
+  92%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  93% {
+    transform: translate3d(-3px, 0, 0);
+  }
+  94% {
+    transform: translate3d(2px, 1px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html[data-theme="zombie"] .zombie-fx-scanlines {
+    animation: zombie-scanline-drift 4.5s ease-in-out infinite;
+  }
+
+  html[data-theme="zombie"] .zombie-fx-glitch {
+    animation: zombie-glitch-nudge 6s steps(1, end) infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme="zombie"] .zombie-fx-scanlines {
+    opacity: 0.14;
+    animation: none;
+  }
+
+  html[data-theme="zombie"] .zombie-fx-glitch {
+    opacity: 0.35;
+    animation: none;
+  }
+
+  .zombie-fx-vignette,
+  .zombie-fx-scanlines,
+  .zombie-fx-glitch {
+    transition: none;
+  }
+}
+
+/* Terminal CRT accent when `data-theme="zombie"` (TRD §2.2). */
+.terminal-panel-zombie {
+  border-color: color-mix(in srgb, var(--token-ui-text) 45%, transparent);
+  box-shadow:
+    0 0 0 1px rgba(0, 255, 65, 0.18),
+    0 0 28px rgba(0, 60, 20, 0.45);
+}
+
+.terminal-panel-zombie .font-pixel {
+  text-shadow: 0 0 8px rgba(0, 255, 65, 0.35);
+}
