@@ -260,10 +260,10 @@ export function GardenCanvas() {
   }, [pixiReady, gardenSnap, plants, cottageHotspots]);
 
   return (
-    <div className="relative min-h-dvh w-full min-w-0 bg-sky md:min-h-[calc(100dvh-5.5rem)]">
+    <div className="relative w-full min-w-0 bg-sky min-h-[100dvh] md:min-h-[calc(100dvh-5.5rem)]">
       <div
         ref={hostRef}
-        className="relative min-h-dvh w-full min-w-0 touch-pan-y overflow-hidden bg-ground md:min-h-[calc(100dvh-5.5rem)]"
+        className="relative block min-h-[100dvh] w-full min-w-0 touch-pan-y overflow-hidden bg-sky md:min-h-[calc(100dvh-5.5rem)]"
         data-component="garden-canvas-host"
       />
       <div

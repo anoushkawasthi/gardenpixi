@@ -148,8 +148,15 @@ export function createGardenController(): GardenControllerApi {
     if (!worldRoot || !lastState) return;
     const { cx, cy, zoom } = lastState.camera;
     const { w: Wc, h: Hc } = lastScreen;
-    worldRoot.scale.set(zoom, zoom);
-    worldRoot.position.set(Wc / 2 - cx * zoom, Hc / 2 - cy * zoom);
+    if (Wc < 1 || Hc < 1) return;
+    /** Scale up when the world is narrower/shorter than the canvas so sky + ground cover edge-to-edge (no side bars). */
+    let s = zoom;
+    const worldWpx = WORLD_W * s;
+    const worldHpx = WORLD_H * s;
+    const cover = Math.max(Wc / worldWpx, Hc / worldHpx);
+    if (cover > 1) s *= cover;
+    worldRoot.scale.set(s, s);
+    worldRoot.position.set(Wc / 2 - cx * s, Hc / 2 - cy * s);
   };
 
   const applyRendererSize = (screen: ScreenCss, dpr: number) => {

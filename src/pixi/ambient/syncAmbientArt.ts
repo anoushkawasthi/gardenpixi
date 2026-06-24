@@ -1,5 +1,6 @@
 import type { EnvironmentMode } from "../../types";
 import type { Container, Graphics, Spritesheet, Texture } from "pixi.js";
+import { hasBgFieldPack, paintBgFieldGround, resetBgFieldPack, tryLoadBgFieldPack } from "./bgFieldGrass";
 import { tryLoadAmbientSpritesheet } from "./loadAsepriteAmbient";
 
 const HORIZON_RATIO = 0.42;
@@ -47,6 +48,7 @@ export function resetAmbientArt(
     }
   }
   activeSheet = null;
+  resetBgFieldPack();
 }
 
 export function setAmbientMountGeneration(gen: number): void {
@@ -83,19 +85,22 @@ function drawProcedural(ctx: AmbientSyncContext): void {
   const isNight = environmentMode === "night";
   const isZombie = environmentMode === "zombie";
 
-  const grassTint = isZombie ? 0x4a3a32 : isNight ? 0x2a4018 : 0x3d8c42;
-  const grass = new Graphics();
-  for (let i = 0; i < 48; i++) {
-    const gx = 12 + ((i * 97) % (worldW - 24));
-    const gy = horizonY + 8 + ((i * 13) % (worldH - horizonY - 20));
-    grass.moveTo(gx, gy);
-    grass.lineTo(gx - 2, gy - 6 - (i % 3));
-    grass.lineTo(gx + 2, gy - 5 - (i % 4));
-    grass.closePath();
-    grass.fill({ color: grassTint, alpha: 0.75 });
+  const paintedBg = hasBgFieldPack() && paintBgFieldGround(ctx);
+  if (!paintedBg) {
+    const grassTint = isZombie ? 0x4a3a32 : isNight ? 0x2a4018 : 0x3d8c42;
+    const grass = new Graphics();
+    for (let i = 0; i < 48; i++) {
+      const gx = 12 + ((i * 97) % (worldW - 24));
+      const gy = horizonY + 8 + ((i * 13) % (worldH - horizonY - 20));
+      grass.moveTo(gx, gy);
+      grass.lineTo(gx - 2, gy - 6 - (i % 3));
+      grass.lineTo(gx + 2, gy - 5 - (i % 4));
+      grass.closePath();
+      grass.fill({ color: grassTint, alpha: 0.75 });
+    }
+    grass.eventMode = "none";
+    ground.addChild(grass);
   }
-  grass.eventMode = "none";
-  ground.addChild(grass);
 
   const cloudColor = isZombie ? 0x553355 : isNight ? 0x2a3544 : 0xffffff;
   const cloudAlpha = isZombie ? 0.35 : isNight ? 0.22 : 0.42;
@@ -310,10 +315,17 @@ export function scheduleAmbientSheetLoad(
   getCtx: () => AmbientSyncContext,
 ): void {
   void tryLoadAmbientSpritesheet(pixi).then((sheet) => {
-    if (!sheet || isAmbientMountStale(gen)) {
+    if (isAmbientMountStale(gen)) {
       sheet?.destroy(true);
       return;
     }
-    syncAmbientArt(getCtx(), sheet);
+    if (sheet) {
+      syncAmbientArt(getCtx(), sheet);
+      return;
+    }
+    void tryLoadBgFieldPack(pixi).then((ok) => {
+      if (isAmbientMountStale(gen) || !ok) return;
+      syncAmbientArt(getCtx());
+    });
   });
 }
